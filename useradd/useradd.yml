@@ -1,0 +1,28 @@
+- name: Configure users
+  hosts: demo
+  remote_user: root
+  become: yes
+  gather_facts: yes
+
+  vars:
+      user_list: 
+         - name: testusr1
+           password:  'ch@ng3m3'
+           uid: 1100
+           group: users
+         - name: testusr2
+           password:  'ch@ng3m3'
+           uid: 1101
+           group: users
+
+  tasks:
+    - name: Create a login user
+      user:
+         name: "{{ item.name }}"
+         password: "{{ item.password }}"
+         uid:  "{{ item.uid }}"
+         group:  "{{ item.group }}"
+         state: present
+         shell: /bin/bash
+      with_items: "{{ user_list }}"
+
