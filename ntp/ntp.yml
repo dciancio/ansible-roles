@@ -1,3 +1,4 @@
+---
 - name: Configure NTP
   hosts: demo
   remote_user: root

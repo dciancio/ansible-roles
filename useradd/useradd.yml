@@ -1,27 +1,20 @@
+---
 - name: Configure users
   hosts: demo
   remote_user: root
   become: yes
   gather_facts: yes
-
-  vars:
-      password:  '$6$EQ/UEqdo$RVvy41Z.pXyaqbdT25/izilNtapqK9GL.I9HEpWT3ECxKUljo16AqdhALtVzaKMGtkBs8pFFQMNu9w6xWuIjs/'
-      user_list: 
-         - name: testusr1
-           uid: 1100
-           group: users
-         - name: testusr2
-           uid: 1101
-           group: users
-
+ 
+  vars_files:
+    - users.yml
+ 
   tasks:
     - name: Create a login user
       user:
          name: "{{ item.name }}"
-         password: "{{ password }}"
+         password: "{{ item.password | password_hash('sha512') }}"
          uid:  "{{ item.uid }}"
          group:  "{{ item.group }}"
          state: present
          shell: /bin/bash
       with_items: "{{ user_list }}"
-
