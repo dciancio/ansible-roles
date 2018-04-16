@@ -1,0 +1,57 @@
+---
+# tasks file for ntp
+- name: Disable chronyd
+  service: name=chronyd state=stopped enabled=no
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version|int >= 7
+   
+- name: Install NTP and bind-utils
+  yum: name={{ item }} state=installed
+  with_items:
+    - ntp
+    - bind-utils
+
+- template: src=templates/ntp.conf.j2 dest=/etc/ntp.conf backup=yes
+  notify: Restart NTP
+
+- name: Set NTP synchronization
+  shell: timedatectl set-ntp true
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version|int >= 7
+
+- name: Make sure NTP is stopped
+  service: name=ntpd state=stopped
+
+- name: Nslookup time server
+  shell: nslookup {{ item }}
+  with_items: "{{ ntp_servers }}"
+
+- name: Perform initial sync
+  shell: ntpdate {{ item }}
+  with_items: "{{ ntp_servers }}"
+
+- name: Make sure NTP is started up
+  service: name=ntpd state=started enabled=yes
+
+- name: Make sure NTP is started up
+  service: name=ntpd state=started enabled=yes
+
+- name: Fetch NTP peers
+  shell: ntpq -p
+  register: result
+
+- name: Display NTP peers
+  debug: var=result.stdout
+
+#- name: output host facts
+#  debug:
+#  var: hostvars[inventory_hostname]
+
+#- name: check version integer
+#  debug: msg="ansible_distribution {{ ansible_distribution }}"
+
+#- name: check version integer
+#  debug: msg="ansible_distribution_major_version {{ ansible_distribution_major_version|int }}"
+

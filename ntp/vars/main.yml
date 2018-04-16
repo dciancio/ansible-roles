@@ -1,0 +1,5 @@
+---
+# vars file for ntp
+ntp_servers:
+   - time.nrc.ca
+
