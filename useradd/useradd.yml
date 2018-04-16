@@ -5,13 +5,12 @@
   gather_facts: yes
 
   vars:
+      password:  '$6$EQ/UEqdo$RVvy41Z.pXyaqbdT25/izilNtapqK9GL.I9HEpWT3ECxKUljo16AqdhALtVzaKMGtkBs8pFFQMNu9w6xWuIjs/'
       user_list: 
          - name: testusr1
-           password:  'ch@ng3m3'
            uid: 1100
            group: users
          - name: testusr2
-           password:  'ch@ng3m3'
            uid: 1101
            group: users
 
@@ -19,7 +18,7 @@
     - name: Create a login user
       user:
          name: "{{ item.name }}"
-         password: "{{ item.password }}"
+         password: "{{ password }}"
          uid:  "{{ item.uid }}"
          group:  "{{ item.group }}"
          state: present
