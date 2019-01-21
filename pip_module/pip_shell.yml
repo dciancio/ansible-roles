@@ -1,0 +1,16 @@
+---
+- name: Install PIP module using Ansible pip module
+  hosts: local
+  remote_user: root
+  become: yes
+  gather_facts: yes
+
+  tasks:
+  - name: Installation package pip pour le endpoint RHEL
+    shell: source /opt/rh/python27/enable && pip list
+    tags: pip
+
+  - name: Installation package pip pour le endpoint RHEL
+    shell: source /opt/rh/python27/enable && pip install pyvmomi
+    tags: pip
+ 
